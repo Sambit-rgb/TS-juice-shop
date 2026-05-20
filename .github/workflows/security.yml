@@ -26,7 +26,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install
@@ -47,7 +47,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install
@@ -64,27 +64,33 @@ jobs:
     if: github.event_name == 'pull_request'
 
     steps:
+      - name: Get PR details
+        id: pr
+        uses: actions/github-script@v7
+        with:
+          script: |
+            core.setOutput("head_sha", context.payload.pull_request.head.sha);
+
       - name: Checkout PR code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          ref: ${{ steps.pr.outputs.head_sha }}
+          fetch-depth: 2
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm install
 
       - name: Run Claude Security Review
-        uses: anthropics/claude-code-security-reviewer@main
+        uses: anthropics/claude-code-security-review@main
         with:
           comment-pr: true
           claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
-          claude-model: "claude-sonnet-4-20250514"
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
+          claude-model: "claude-haiku-4-5-20251001"
 
       - name: Upload Security Artifacts
         uses: actions/upload-artifact@v4
