@@ -27,12 +27,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm ci
+        run: npm install
 
       - name: Run ESLint
         run: npm run lint
@@ -51,12 +48,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm ci
+        run: npm install
 
       - name: Run tests
         run: npm test
@@ -79,12 +73,9 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '18'
-          cache: 'npm'
 
       - name: Install dependencies
-        run: |
-          npm install
-          npm ci
+        run: npm install
 
       - name: Run Claude Security Review
         uses: anthropics/claude-code-security-reviewer@main
