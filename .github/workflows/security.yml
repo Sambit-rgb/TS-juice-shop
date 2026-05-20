@@ -45,8 +45,10 @@ jobs:
           fetch-depth: 2
 
       - name: Run Claude Security Review
-        uses: anthropics/claude-code-security-review@main
+        uses: anthropics/claude-code-security-reviewer@main
         with:
           comment-pr: true
           claude-api-key: ${{ secrets.CLAUDE_API_KEY }}
-          claude-model: "claude-sonnet-4-5"
+          claude-model: "claude-sonnet-4-20250514"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.CLAUDE_API_KEY }}
