@@ -1,48 +1,25 @@
-name: Security Review (Manual PR)
+name: Claude Security Review
 
 permissions:
   pull-requests: write
   contents: read
 
 on:
-  workflow_dispatch:
-    inputs:
-      pr_number:
-        description: "PR number"
-        required: true
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
 
 jobs:
-  security:
+  security-review:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get PR details
-        id: pr
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prNumber = parseInt(process.env.PR_NUMBER);
-            if (isNaN(prNumber) || prNumber <= 0) {
-              core.setFailed('Invalid PR number provided');
-              return;
-            }
-            
-            const { data: pr } = await github.rest.pulls.get({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber
-            });
-
-            core.setOutput("head_sha", pr.head.sha);
-            core.setOutput("head_ref", pr.head.ref);
-        env:
-          PR_NUMBER: ${{ inputs.pr_number }}
-
       - name: Checkout PR code
         uses: actions/checkout@v4
         with:
-          ref: ${{ steps.pr.outputs.head_sha }}
-          fetch-depth: 2
+          fetch-depth: 0
 
       - name: Run Claude Security Review
         uses: anthropics/claude-code-security-reviewer@main
